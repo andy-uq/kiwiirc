@@ -388,12 +388,15 @@ function clientMiddleware(state, network) {
                     message = '\x02' + event.command + '\x02 ' + message;
                 }
 
-                state.addMessage(buffer, {
-                    time: eventTime,
-                    server_time: serverTime,
-                    nick: '',
-                    message: message,
-                });
+                // Skip empty/whitespace-only messages
+                if (message && message.trim()) {
+                    state.addMessage(buffer, {
+                        time: eventTime,
+                        server_time: serverTime,
+                        nick: '',
+                        message: message,
+                    });
+                }
             }
         }
 

@@ -144,11 +144,18 @@ const methods = {
     props: {},
     displayNick() {
         let props = this.props;
-        let suffix = props.message.nick ?
-            ':' :
-            '';
+        let nick = props.message.nick;
 
-        return props.message.nick + suffix;
+        // For server buffers with no nick, show the server name
+        if (!nick && props.ml.buffer.isServer()) {
+            let network = props.ml.buffer.getNetwork();
+            nick = (network.ircClient && network.ircClient.network.name)
+                || network.name
+                || 'server';
+        }
+
+        let suffix = nick ? ':' : '';
+        return nick + suffix;
     },
     userMode(user) {
         let props = this.props;

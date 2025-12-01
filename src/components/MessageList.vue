@@ -7,6 +7,7 @@
         :class="{
             'kiwi-messagelist--smoothscroll': smooth_scroll,
             'kiwi-messagelist--showtyping': buffer.setting('share_typing'),
+            'kiwi-messagelist--server': buffer.isServer(),
         }"
         @click.self="onListClick"
     >
@@ -171,6 +172,10 @@ export default {
             return false;
         },
         listType() {
+            // Force inline layout for server buffers
+            if (this.buffer.isServer()) {
+                return 'inline';
+            }
             if (this.$state.setting('messageLayout')) {
                 log.info('Deprecation Warning: The config option \'messageLayout\' has been moved to buffers.messageLayout');
             }

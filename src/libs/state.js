@@ -577,6 +577,17 @@ function createNewState() {
                     return;
                 }
 
+                // Skip empty/whitespace-only messages (also strip IRC formatting codes)
+                if (!message.message) {
+                    return;
+                }
+                // Strip IRC formatting codes before checking if empty
+                let strippedMsg = message.message
+                    .replace(/\x03[0-9]{0,2}(,[0-9]{0,2})?|[\x02\x16\x1d\x1f\x0f]/g, '');
+                if (!strippedMsg.trim()) {
+                    return;
+                }
+
                 let user = this.getUser(buffer.networkid, message.nick);
                 let bufferMessage = new Message(message, user);
                 if (user && user.ignore) {

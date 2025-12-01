@@ -114,6 +114,8 @@ export default {
     padding-top: 0;
     height: 100%;
     margin: 0;
+    font-family: Consolas, monaco, monospace;
+    font-size: 13px;
 }
 
 .kiwi-serverview-inner {
@@ -127,6 +129,73 @@ export default {
 
 .kiwi-serverview-alerts {
     margin-bottom: 1em;
+}
+
+/* Server buffer message styling */
+.kiwi-serverview .kiwi-messagelist-message--text {
+    padding: 2px 10px;
+    line-height: 1.4em;
+}
+
+/* Always show timestamps in server view, inline format
+   Use high specificity to override the default absolute positioning */
+.kiwi-serverview .kiwi-messagelist .kiwi-messagelist-message--text .kiwi-messagelist-time {
+    display: inline;
+    position: static;
+    padding: 0;
+    margin-right: 0;
+    opacity: 0.7;
+    background: transparent;
+    border-radius: 0;
+}
+
+/* Override the hover behavior for timestamps in server view */
+.kiwi-serverview .kiwi-messagelist .kiwi-messagelist-message--text:hover .kiwi-messagelist-time {
+    display: inline;
+    position: static;
+    background: transparent;
+}
+
+/* Format: [timestamp] */
+.kiwi-serverview .kiwi-messagelist-message--text .kiwi-messagelist-time::before {
+    content: '[';
+}
+
+.kiwi-serverview .kiwi-messagelist-message--text .kiwi-messagelist-time::after {
+    content: '] ';
+}
+
+.kiwi-serverview .kiwi-messagelist-message--text .kiwi-messagelist-nick {
+    margin-right: 0;
+}
+
+/* Multi-line message alignment using hanging indent */
+.kiwi-serverview .kiwi-messagelist-message--text > div:first-child {
+    display: block;
+    padding-left: 12em;
+    text-indent: -12em;
+}
+
+/* Body stays inline but wraps properly with the indent */
+.kiwi-serverview .kiwi-messagelist-body {
+    display: inline;
+    margin-bottom: 0;
+    text-indent: 0;
+}
+
+/* Tighter spacing for server messages */
+.kiwi-serverview .kiwi-messagelist-item:last-of-type {
+    margin-bottom: 0;
+}
+
+/* MOTD styling - keep it consistent with the rest */
+.kiwi-serverview .kiwi-messagelist-message-motd {
+    font-family: inherit;
+}
+
+/* Hide reaction bar in server view - not applicable for server messages */
+.kiwi-serverview .kiwi-messagelist .kiwi-messagelist-message--text .kiwi-messagelist-reactionbar {
+    display: none;
 }
 
 </style>
