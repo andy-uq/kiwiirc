@@ -29,6 +29,6 @@
         "key": ""
     },
     "plugins": [
-        { "name": "customise", "url": "static/plugins/customise.html" }
+         { "name": "avatars", "url": "static/plugins/avatars.html" }
     ]
 }

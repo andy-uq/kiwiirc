@@ -1,0 +1,57 @@
+<script>
+kiwi.plugin('avatars', function(kiwi, log) {
+    const AVATAR_BASE = 'static/avatars/';
+
+    function setAvatar(user, nick, realname) {
+        const nickClean = nick.toLowerCase().trim();
+        const realnameClean = realname ? realname.toLowerCase().trim() : '';
+
+        // Try nick first, fallback to realname
+        const smallPrimary = AVATAR_BASE + nickClean + '_sm.png';
+        const largePrimary = AVATAR_BASE + nickClean + '_lg.png';
+        const smallFallback = realnameClean ? AVATAR_BASE + realnameClean + '_sm.png' : '';
+        const largeFallback = realnameClean ? AVATAR_BASE + realnameClean + '_lg.png' : '';
+
+        user.avatar.small = smallPrimary;
+        user.avatar.large = largePrimary;
+
+        // Store fallbacks for the error handler
+        user.avatarFallback = {
+            small: smallFallback,
+            large: largeFallback,
+        };
+    }
+
+    // Handle failed avatar loads - try fallback
+    kiwi.on('user.avatar.failed', (event) => {
+        const user = event.user;
+        const fallback = user.avatarFallback;
+
+        if (fallback && fallback.small && !user.avatarFallbackTried) {
+            user.avatarFallbackTried = true;
+            user.avatar.small = fallback.small;
+            user.avatar.large = fallback.large;
+        }
+    });
+
+    // WHO response (channel join)
+    kiwi.on('irc.wholist', (event, network) => {
+        event.users.forEach((eventUser) => {
+            const user = network.userByName(eventUser.nick);
+            if (user) {
+                setAvatar(user, eventUser.nick, eventUser.real_name);
+            }
+        });
+    });
+
+    // WHOIS response
+    kiwi.on('irc.whois', (event, network) => {
+        const user = network.userByName(event.nick);
+        if (user) {
+            setAvatar(user, event.nick, event.real_name);
+        }
+    });
+
+    log('Avatar plugin loaded');
+});
+</script>
