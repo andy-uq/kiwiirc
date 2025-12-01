@@ -1,5 +1,15 @@
 <template>
     <div class="kiwi-messageinfo" @click.stop>
+        <div v-if="canReact && !hasReacted" class="kiwi-messageinfo-reactions">
+            <reaction-picker
+                :message="message"
+                :buffer="buffer"
+                @reacted="onReacted"
+            />
+        </div>
+        <div v-else-if="hasReacted" class="kiwi-messageinfo-reacted">
+            {{ $t('message_already_reacted', { emoji: userReaction }) }}
+        </div>
         <div v-if="message.mentioned_urls.length > 0" class="kiwi-messageinfo-urls">
             <div v-for="url in message.mentioned_urls" :key="url" class="kiwi-messageinfo-url">
                 <a
@@ -64,8 +74,12 @@
 'kiwi public';
 
 import GlobalApi from '@/libs/GlobalApi';
+import ReactionPicker from './ReactionPicker';
 
 export default {
+    components: {
+        ReactionPicker,
+    },
     props: ['buffer', 'message'],
     data() {
         return {
@@ -76,6 +90,19 @@ export default {
     computed: {
         showLinkPreviews() {
             return this.$state.setting('buffers.show_link_previews');
+        },
+        ourNick() {
+            return this.buffer.getNetwork().nick;
+        },
+        canReact() {
+            // Can only react to messages that have a msgid
+            return !!this.message.id && this.message.type === 'privmsg';
+        },
+        hasReacted() {
+            return !!this.message.getUserReaction(this.ourNick);
+        },
+        userReaction() {
+            return this.message.getUserReaction(this.ourNick);
         },
     },
     methods: {
@@ -101,6 +128,9 @@ export default {
             let buffer = this.$state.addBuffer(network.id, this.message.nick);
             this.$state.setActiveBuffer(network.id, buffer.name);
         },
+        onReacted(emoji) {
+            this.$emit('close');
+        },
     },
 };
 </script>
@@ -111,6 +141,17 @@ export default {
     position: relative;
     padding: 0;
     margin-bottom: 10px;
+}
+
+.kiwi-messageinfo-reactions {
+    margin-bottom: 10px;
+}
+
+.kiwi-messageinfo-reacted {
+    padding: 8px;
+    text-align: center;
+    font-style: italic;
+    opacity: 0.7;
 }
 
 .kiwi-messageinfo-urls {

@@ -92,6 +92,34 @@
             @close="props.ml.toggleMessageInfo()"
         />
 
+        <component
+            :is="injections.components.MessageReactions"
+            v-if="props.message.hasReactions()"
+            :message="props.message"
+            :buffer="props.ml.buffer"
+        />
+
+        <div v-if="props.m().showReactionBar(props.message)" class="kiwi-messagelist-reactionbar">
+            <span
+                v-for="reaction in props.m().getReactions()"
+                :key="reaction.name"
+                :title="reaction.name"
+                :class="[
+                    'kiwi-messagelist-reactionbar-emoji',
+                    props.m().hasUserReacted(props.message) ? 'kiwi-messagelist-reactionbar-emoji--disabled' : '',
+                    props.m().isUserReaction(props.message, reaction.emoji) ? 'kiwi-messagelist-reactionbar-emoji--selected' : '',
+                ]"
+                @click.stop="props.m().sendReaction(props.message, reaction.emoji)"
+            >
+                <component
+                    :is="injections.components.TwemojiImg"
+                    :twemoji="reaction.twemoji"
+                    :emoji="reaction.emoji"
+                    :title="reaction.name"
+                />
+            </span>
+        </div>
+
         <div v-if="props.message.embed.payload && props.ml.shouldAutoEmbed">
             <component
                 :is="injections.components.MediaViewer"
@@ -106,8 +134,11 @@
 
 <script>
 
+import { REACTIONS } from '@/libs/ReactionMiddleware';
 import MediaViewer from './MediaViewer';
 import MessageInfo from './MessageInfo';
+import MessageReactions from './MessageReactions';
+import TwemojiImg from './TwemojiImg';
 
 const methods = {
     props: {},
@@ -127,6 +158,78 @@ const methods = {
         let props = this.props;
         return props.ml.buffer.userModePrefix(user);
     },
+    isLastInCluster() {
+        let props = this.props;
+        let ml = props.ml;
+        let idx = props.idx;
+        let message = props.message;
+        let nextMessage = ml.filteredMessages[idx + 1];
+
+        if (!nextMessage) {
+            return true;
+        }
+        if (nextMessage.nick !== message.nick) {
+            return true;
+        }
+        if (nextMessage.time - message.time >= 60000) {
+            return true;
+        }
+        if (nextMessage.type !== message.type) {
+            return true;
+        }
+        return false;
+    },
+    canReact(message) {
+        let props = this.props;
+        let types = ['privmsg', 'action', 'notice'];
+        if (types.indexOf(message.type) === -1) {
+            return false;
+        }
+        if (!message.id) {
+            return false;
+        }
+        let ourNick = props.ml.buffer.getNetwork().nick;
+        if (message.nick && message.nick.toLowerCase() === ourNick.toLowerCase()) {
+            return false;
+        }
+        let client = props.ml.buffer.getNetwork().ircClient;
+        return client.network.cap.isEnabled('draft/react');
+    },
+    showReactionBar(message) {
+        // Hide if user already reacted
+        if (this.hasUserReacted(message)) {
+            return false;
+        }
+        return this.isLastInCluster() && this.canReact(message);
+    },
+    getReactions() {
+        return REACTIONS;
+    },
+    hasUserReacted(message) {
+        let props = this.props;
+        let nick = props.ml.buffer.getNetwork().nick;
+        return !!message.getUserReaction(nick);
+    },
+    isUserReaction(message, emoji) {
+        let props = this.props;
+        let nick = props.ml.buffer.getNetwork().nick;
+        return message.getUserReaction(nick) === emoji;
+    },
+    sendReaction(message, emoji) {
+        let props = this.props;
+        let network = props.ml.buffer.getNetwork();
+        let nick = network.nick;
+        if (message.getUserReaction(nick)) {
+            return;
+        }
+        let ircClient = network.ircClient;
+        let msgid = message.id;
+        if (!msgid) {
+            return;
+        }
+        ircClient.reactions.send(props.ml.buffer.name, msgid, emoji);
+        message.addReaction(emoji, nick, Date.now());
+    },
 };
 
 export default {
@@ -134,7 +237,9 @@ export default {
         components: {
             default: {
                 MessageInfo,
+                MessageReactions,
                 MediaViewer,
+                TwemojiImg,
             },
         },
     },
@@ -252,6 +357,50 @@ export default {
     .kiwi-messagelist-message--text .kiwi-messagelist-body {
         padding-right: 0;
     }
+}
+
+/* Reaction bar - shown at end of message cluster */
+.kiwi-messagelist-message--text .kiwi-messagelist-reactionbar {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 4px;
+    padding: 4px 0;
+}
+
+.kiwi-messagelist-message--text .kiwi-messagelist-reactionbar-emoji {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 6px;
+    border-radius: 6px;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.15s, background-color 0.15s, transform 0.1s;
+}
+
+.kiwi-messagelist-message--text .kiwi-messagelist-reactionbar-emoji:hover:not(.kiwi-messagelist-reactionbar-emoji--disabled) {
+    opacity: 1;
+    background-color: rgba(128, 128, 128, 0.2);
+    transform: scale(1.15);
+}
+
+.kiwi-messagelist-message--text .kiwi-messagelist-reactionbar-emoji--selected {
+    opacity: 1;
+    background-color: rgba(66, 133, 244, 0.3);
+}
+
+.kiwi-messagelist-message--text .kiwi-messagelist-reactionbar-emoji--disabled {
+    cursor: not-allowed;
+}
+
+.kiwi-messagelist-message--text .kiwi-messagelist-reactionbar-emoji--disabled:not(.kiwi-messagelist-reactionbar-emoji--selected) {
+    filter: grayscale(0.8);
+    opacity: 0.4;
+}
+
+.kiwi-messagelist-message--text .kiwi-messagelist-reactionbar .kiwi-twemoji {
+    height: 1.2em;
+    width: 1.2em;
 }
 
 </style>

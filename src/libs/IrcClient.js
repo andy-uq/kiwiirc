@@ -6,6 +6,7 @@ import Irc from 'irc-framework';
 import * as TextFormatting from '@/helpers/TextFormatting';
 import typingMiddleware from './TypingMiddleware';
 import chathistoryMiddleware from './ChathistoryMiddleware';
+import reactionMiddleware from './ReactionMiddleware';
 import * as ServerConnection from './ServerConnection';
 
 export function create(state, network) {
@@ -19,9 +20,11 @@ export function create(state, network) {
         message_max_length: 350,
     });
     ircClient.requestCap('znc.in/self-message');
+    ircClient.requestCap('echo-message');
     ircClient.use(chathistoryMiddleware());
     ircClient.use(clientMiddleware(state, network));
     ircClient.use(typingMiddleware());
+    ircClient.use(reactionMiddleware());
 
     // Overload the connect() function to make sure we are connecting with the
     // most recent connection details from the network state
@@ -134,6 +137,24 @@ export function create(state, network) {
         if (user) {
             user.typingStatus(event.target, event.status);
         }
+    });
+
+    ircClient.on('reaction', (event) => {
+        // Find the buffer for this reaction
+        let buffer = state.getBufferByName(network.id, event.target);
+        if (!buffer) {
+            return;
+        }
+
+        // Find the message being reacted to
+        let messages = buffer.getMessages();
+        let targetMessage = messages.find((m) => m.id === event.msgid);
+        if (!targetMessage) {
+            return;
+        }
+
+        // Add the reaction to the message
+        targetMessage.addReaction(event.emoji, event.nick, event.time);
     });
 
     return ircClient;
@@ -516,6 +537,38 @@ function clientMiddleware(state, network) {
             if (!buffer) {
                 buffer = state.getOrAddBufferByName(networkid, bufferName);
             }
+
+            // Handle echo-message: if this is our own message echoed back with a msgid,
+            // update the existing message's ID instead of adding a duplicate
+            let isOwnMessage = event.nick.toLowerCase() === client.user.nick.toLowerCase();
+            let msgid = event.tags && (event.tags.msgid || event.tags['draft/msgid']);
+            if (msgid && isOwnMessage && client.network.cap.isEnabled('echo-message')) {
+                // Find recent message from us without a server msgid
+                let bufferMessages = buffer.getMessages();
+                let found = false;
+                let searchStart = Math.max(0, bufferMessages.length - 10);
+                for (let i = bufferMessages.length - 1; i >= searchStart; i--) {
+                    let m = bufferMessages[i];
+                    // Match by nick and message content, check if it has a numeric (local) ID
+                    if (m.nick === event.nick &&
+                        m.message === messageBody &&
+                        typeof m.id === 'number') {
+                        // Update the message ID to the server's msgid
+                        let oldId = m.id;
+                        m.id = msgid;
+                        // Update the messageIds lookup
+                        delete buffer.messagesObj.messageIds[oldId];
+                        buffer.messagesObj.messageIds[msgid] = m;
+                        found = true;
+                        break;
+                    }
+                }
+                // If we found and updated an existing message, don't add a duplicate
+                if (found) {
+                    return;
+                }
+            }
+
             state.addMessage(buffer, message);
         }
 

@@ -53,6 +53,12 @@ export default class Message {
         def(this, 'bodyTemplateProps', message.bodyTemplateProps || {});
         def(this, 'isHighlight', false);
 
+        // Reactions: { emoji: [{ nick, time }, ...], ... }
+        this.reactions = {};
+        // Track which users have reacted to enforce one reaction per user
+        // { nick: emoji, ... }
+        this.reactedUsers = {};
+
         // We don't want the user object to be enumerable
         def(this, 'user', user || null);
 
@@ -70,6 +76,64 @@ export default class Message {
         const tzOffset = (new Date(newTime)).getTimezoneOffset() * 60000;
         // 68400000 equals one day in milliseconds
         this.day_num = Math.floor((newTime - tzOffset) / 86400000);
+    }
+
+    /**
+     * Add a reaction to this message
+     * @param {string} emoji - The reaction emoji
+     * @param {string} nick - The nick of the user who reacted
+     * @param {number} time - Timestamp of the reaction
+     * @returns {boolean} - Whether the reaction was added (false if user already reacted)
+     */
+    addReaction(emoji, nick, time) {
+        let normalizedNick = nick.toLowerCase();
+
+        // Check if user already reacted - if so, don't allow changes (no take-backs)
+        if (this.reactedUsers[normalizedNick]) {
+            return false;
+        }
+
+        // Track that this user has reacted
+        this.reactedUsers[normalizedNick] = emoji;
+
+        // Add to reactions list
+        if (!this.reactions[emoji]) {
+            // Use Vue.set to ensure reactivity
+            getState().$set(this.reactions, emoji, []);
+        }
+
+        this.reactions[emoji].push({
+            nick: nick,
+            time: time || Date.now(),
+        });
+
+        return true;
+    }
+
+    /**
+     * Check if a user has already reacted to this message
+     * @param {string} nick - The nick to check
+     * @returns {string|null} - The emoji they reacted with, or null
+     */
+    getUserReaction(nick) {
+        return this.reactedUsers[nick.toLowerCase()] || null;
+    }
+
+    /**
+     * Check if this message has any reactions
+     * @returns {boolean}
+     */
+    hasReactions() {
+        return Object.keys(this.reactions).length > 0;
+    }
+
+    /**
+     * Get reaction count for a specific emoji
+     * @param {string} emoji
+     * @returns {number}
+     */
+    getReactionCount(emoji) {
+        return this.reactions[emoji] ? this.reactions[emoji].length : 0;
     }
 
     render() {

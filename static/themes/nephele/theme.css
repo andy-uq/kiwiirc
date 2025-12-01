@@ -1,0 +1,291 @@
+/* ============================================================
+   N E P H E L E   G L A S S   T H E M E
+   Extends the stock theme with translucent layers,
+   stable text contrast, and a soft goddess-in-the-machine vibe.
+   ============================================================ */
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 5, 15, 0.55);  /* strong, but still lets Nephele breathe */
+    backdrop-filter: blur(2px);
+    z-index: -1;
+}
+
+/* FULLSCREEN BACKGROUND */
+body {
+    background-image: url('./Nephele1.png'); /* swap to your filename */
+    background-size: cover;
+    background-position: 230px 15px; /* tune this */
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+}
+
+/* FADED GLASS PANELS + BLUR */
+.kiwi-app,
+.kiwi-root,
+.kiwi-window,
+.kiwi-inputbox,
+.kiwi-leftbar,
+.kiwi-rightbar,
+.kiwi-userlist {
+    background: rgba(5, 10, 20, 0.55);  /* translucent but *not* text-murdering */
+    backdrop-filter: blur(10px) saturate(130%);
+    -webkit-backdrop-filter: blur(10px) saturate(130%);
+}
+
+.kiwi-leftbar,
+.kiwi-sidebar {
+    background: rgba(4, 10, 18, 0.75) !important;
+    border-right: 1px solid rgba(180, 210, 255, 0.12);
+    backdrop-filter: blur(12px);
+}
+
+.kiwi-rightbar,
+.kiwi-userlist {
+    background: rgba(4, 10, 18, 0.72) !important;
+    border-left: 1px solid rgba(180, 210, 255, 0.12);
+    backdrop-filter: blur(12px);
+}
+
+/* MAIN CHAT GRADIENT — like HexChat but cleaner */
+.kiwi-messagelist {
+    background:  !important;
+}
+
+.kiwi-messagelist {
+    background: linear-gradient(
+        to bottom,
+        rgba(8, 15, 30, 0.30),
+        rgba(6, 12, 24, 0.50)
+    ) !important;
+    border-radius: 8px;
+    margin: 1rem !important;
+    border: 1px solid rgba(160, 200, 255, 0.08);
+    box-shadow:
+        0 0 35px rgba(10, 20, 40, 0.55),
+        0 0 8px rgba(120, 160, 220, 0.15) inset;
+    backdrop-filter: blur(10px);
+}
+
+/* TEXT — stable opacity so it never disappears in the ethereal boob vortex */
+.kiwi-message-text {
+    color: #e9f2ff !important;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
+}
+
+.kiwi-message-time {
+    color: rgba(200, 215, 255, 0.7) !important;
+}
+
+.kiwi-message-nick {
+    color: #9dd8ff !important;
+}
+
+/* YOUR MESSAGES */
+.kiwi-message-self .kiwi-message-nick {
+    color: #ffe69a !important;
+}
+
+/* MENTIONS / HIGHLIGHTS */
+.kiwi-message--highlight {
+    background: linear-gradient(
+        to right,
+        rgba(255, 215, 140, 0.22),
+        rgba(255, 145, 180, 0.18)
+    );
+    border-left: 2px solid rgba(255, 230, 150, 0.9);
+}
+
+/* SYSTEM MESSAGES */
+.kiwi-message-type-status,
+.kiwi-message-type-notice {
+    color: rgba(220, 235, 255, 0.85) !important;
+    font-style: italic;
+}
+
+/* CHANNEL LIST */
+.kiwi-channel,
+.kiwi-channel-name,
+.kiwi-network,
+.kiwi-server-name {
+    color: #cfe4ff !important;
+}
+
+.kiwi-channel--active .kiwi-channel-name {
+    background: rgba(120, 180, 255, 0.22);
+    border-left: 3px solid rgba(140, 200, 255, 0.95);
+    color: #fff !important;
+}
+
+/* INPUT LINE */
+.kiwi-input input {
+    background: rgba(8, 15, 30, 0.9) !important;
+    border: 1px solid rgba(150, 190, 240, 0.35);
+    border-radius: 8px;
+    color: #eaf1ff !important;
+}
+
+.kiwi-input input::placeholder {
+    color: rgba(185, 205, 230, 0.5);
+}
+
+/* BUTTONS */
+.kiwi-button,
+button {
+    background: radial-gradient(circle at 30% 0%, #5bb2ff, #2c4b70);
+    border-radius: 999px;
+    border: 1px solid rgba(190, 230, 255, 0.5);
+    color: #f7fbff !important;
+    padding: 0.35rem 1rem;
+}
+
+.kiwi-button:hover,
+button:hover {
+    filter: brightness(1.15);
+}
+
+/* SCROLLBARS */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(160, 210, 255, 0.35);
+    border-radius: 4px;
+}
+
+/* REMOVE RAW OPACITY ISSUES (HexChat problem solved) */
+.kiwi-app,
+.kiwi-root,
+.kiwi-messagelist {
+    opacity: 1 !important;
+}
+
+/* ============================================================
+   NEPHELE HIGH-CONTRAST PASS
+   White smoke base, pure white emphasis, bright gold accents.
+   ============================================================ */
+
+:root {
+    --np-text-base: #f5f7ff;       /* white smoke */
+    --np-text-soft: #d7e0ff;
+    --np-text-strong: #ffffff;     /* pure white */
+    --np-gold-soft: #ffd56a;
+    --np-gold-strong: #ffcc33;     /* high luminosity gold */
+    --np-cyan: #7fe6ff;
+}
+
+/* Chat text: crisp, readable, no more murk */
+.kiwi-message-text {
+    color: var(--np-text-base) !important;
+    text-shadow: 0 0 4px rgba(0, 0, 0, 0.9);
+    font-weight: 400;
+}
+
+/* System / status lines (join/part, notices) */
+.kiwi-message-type-status,
+.kiwi-message-type-notice {
+    color: var(--np-text-soft) !important;
+    font-style: italic;
+}
+
+/* Timestamps: dim but clear */
+.kiwi-message-time {
+    color: rgba(210, 220, 255, 0.8) !important;
+}
+
+/* Nicks in chat */
+.kiwi-message-nick {
+    color: var(--np-cyan) !important;
+    font-weight: 500;
+}
+
+/* Your own nick in chat */
+.kiwi-message-self .kiwi-message-nick {
+    color: var(--np-gold-strong) !important;
+    font-weight: 600;
+}
+
+/* Links: bright cyan/white */
+.kiwi-message a,
+.kiwi-message-text a {
+    color: var(--np-cyan) !important;
+    text-decoration: none;
+    font-weight: 500;
+}
+.kiwi-message a:hover,
+.kiwi-message-text a:hover {
+    color: var(--np-text-strong) !important;
+    text-decoration: underline;
+}
+
+/* Highlights / mentions: gold edge, bright text */
+.kiwi-message--highlight {
+    background: linear-gradient(
+        to right,
+        rgba(255, 214, 122, 0.26),
+        rgba(255, 255, 255, 0.04)
+    );
+    border-left: 3px solid var(--np-gold-strong);
+}
+.kiwi-message--highlight .kiwi-message-text {
+    color: var(--np-text-strong) !important;
+    font-weight: 500;
+}
+
+/* Channel list: higher contrast, gold for active */
+.kiwi-channel-name {
+    color: var(--np-text-soft) !important;
+}
+
+.kiwi-channel--active .kiwi-channel-name {
+    color: var(--np-text-strong) !important;
+    font-weight: 600;
+    background: linear-gradient(
+        to right,
+        rgba(255, 204, 80, 0.30),
+        rgba(0, 0, 0, 0)
+    );
+    border-left: 3px solid var(--np-gold-strong);
+}
+
+/* User list on the right: readable + consistent */
+.kiwi-userlist,
+.kiwi-rightbar {
+    color: var(--np-text-soft) !important;
+}
+
+.kiwi-userlist-nick {
+    color: var(--np-text-base) !important;
+}
+
+/* Input line: bright text, clear focus */
+.kiwi-input input {
+    color: var(--np-text-strong) !important;
+    background: rgba(8, 15, 30, 0.95) !important;
+    border: 1px solid rgba(200, 220, 255, 0.6) !important;
+}
+.kiwi-input input::placeholder {
+    color: rgba(210, 220, 245, 0.6) !important;
+}
+
+/* Buttons: gold primary, white text */
+.kiwi-button,
+button {
+    background: radial-gradient(circle at 30% 0%, var(--np-gold-strong), #5c4a1f);
+    border-radius: 999px;
+    border: 1px solid rgba(255, 230, 180, 0.8);
+    color: var(--np-text-strong) !important;
+    font-weight: 500;
+}
+.kiwi-button:hover,
+button:hover {
+    filter: brightness(1.15);
+}
+
+/* Header bar text: pure white so it anchors the top */
+.kiwi-header,
+.kiwi-statusbar {
+    color: var(--np-text-strong) !important;
+}

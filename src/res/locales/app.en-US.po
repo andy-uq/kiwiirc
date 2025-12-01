@@ -603,6 +603,10 @@ msgstr "Unread Messages"
 msgid "reply_in_private"
 msgstr "Reply in private"
 
+#: You already reacted {{emoji}}
+msgid "message_already_reacted"
+msgstr "You already reacted {{emoji}}"
+
 #: Kick reason
 msgid "kick_reason"
 msgstr "Kick reason"
