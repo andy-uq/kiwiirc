@@ -203,7 +203,7 @@ const methods = {
     },
     canReact(message) {
         let props = this.props;
-        let types = ['privmsg', 'action', 'notice'];
+        let types = ['privmsg', 'action'];
         if (types.indexOf(message.type) === -1) {
             return false;
         }

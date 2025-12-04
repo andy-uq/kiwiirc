@@ -304,8 +304,8 @@ const methods = {
     },
     canReact(message) {
         let props = this.props;
-        // Only allow reactions on regular messages (privmsg, action, notice)
-        let types = ['privmsg', 'action', 'notice'];
+        // Only allow reactions on regular messages (privmsg, action)
+        let types = ['privmsg', 'action'];
         if (types.indexOf(message.type) === -1) {
             return false;
         }

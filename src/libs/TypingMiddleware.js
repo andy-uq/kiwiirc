@@ -20,6 +20,20 @@ export default function typingMiddleware() {
             return;
         }
 
+        // Safety check for required properties
+        if (!message.params || !message.params[0] || !client.user || !client.user.nick) {
+            console.log('[TypingMiddleware] Missing required properties:', {
+                command,
+                hasParams: !!message.params,
+                param0: message.params?.[0],
+                hasUser: !!client.user,
+                userNick: client.user?.nick,
+                rawLine,
+            });
+            next();
+            return;
+        }
+
         // if we are params[0] then the target is the sender (direct message)
         let target = (message.params[0].toLowerCase() === client.user.nick.toLowerCase()) ?
             message.nick :

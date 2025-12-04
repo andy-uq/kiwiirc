@@ -69,6 +69,14 @@ export default function reactionMiddleware() {
 
         // Safety check for required properties
         if (!message.params || !message.params[0] || !client.user || !client.user.nick) {
+            console.log('[ReactionMiddleware] Missing required properties:', {
+                command,
+                hasParams: !!message.params,
+                param0: message.params?.[0],
+                hasUser: !!client.user,
+                userNick: client.user?.nick,
+                rawLine,
+            });
             next();
             return;
         }
