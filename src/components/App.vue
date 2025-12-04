@@ -401,7 +401,7 @@ body {
 /* .kiwi-workspace has ::before and ::after 4px above itself for the connection status */
 .kiwi-workspace {
     position: relative;
-    margin-left: 220px;
+    margin-left: 240px;
     left: 0;
     top: 4px;
     display: flex;
@@ -450,7 +450,7 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    width: 220px;
+    width: 240px;
     bottom: 0;
     z-index: 11; /* Must be at least 1 higher than the workspace :after z-index; */
     transition: left 0.145s, margin-left 0.145s;
@@ -479,7 +479,7 @@ body {
     }
 
     .kiwi-statebrowser {
-        left: -220px;
+        left: -240px;
     }
 
     .kiwi-wrap--statebrowser-drawopen .kiwi-statebrowser {

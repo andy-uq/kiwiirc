@@ -1,7 +1,8 @@
 <template>
     <div
         :class="{
-            'kiwi-nicklist-user--away': user.isAway() || user.isOffline(),
+            'kiwi-nicklist-user--away': user.isAway() && !user.isOffline(),
+            'kiwi-nicklist-user--offline': user.isOffline(),
             'kiwi-nicklist-user--ignore': user.ignore,
         }"
         v-bind="dataAttributes"
@@ -13,21 +14,23 @@
                 v-bind="nicklist.avatarProps"
                 :user="user"
                 :network="network"
-                size="small"
+                size="large"
             />
         </div>
         <AwayStatusIndicator
-            v-else
+            v-if="!nicklist.shouldShowAvatars"
             :network="network"
             :user="user"
             :toggle="false"
             class="kiwi-nicklist-awaystatus"
         />
-        <span class="kiwi-nicklist-user-prefix">{{ userModePrefix }}</span>
-        <span
-            class="kiwi-nicklist-user-nick"
-            :style="{ color: userColour }"
-        >{{ user.nick }} </span>
+        <div class="kiwi-nicklist-user-info">
+            <span class="kiwi-nicklist-user-prefix">{{ userModePrefix }}</span>
+            <span
+                class="kiwi-nicklist-user-nick"
+                :style="{ color: userColour }"
+            >{{ user.nick }}</span>
+        </div>
         <div class="kiwi-nicklist-user-buttons">
             <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -123,9 +126,18 @@ export default {
     transition: all 0.1s;
 
     .kiwi-nicklist--avatars & {
-        height: 38px;
-        max-height: 38px;
-        padding: 4px 10px;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        height: 250px;
+        max-height: 250px;
+        padding: 10px;
+        border-left: none;
+        border-radius: 8px;
+
+        &:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
     }
 }
 
@@ -137,6 +149,29 @@ export default {
     .kiwi-avatar {
         width: 30px;
         height: 30px;
+        transition: filter 0.3s, opacity 0.3s;
+    }
+
+    .kiwi-nicklist--avatars & {
+        margin-right: 0;
+        margin-bottom: 10px;
+
+        .kiwi-avatar {
+            width: 200px;
+            height: 200px;
+        }
+    }
+
+    // Away status: slightly dimmed and desaturated
+    .kiwi-nicklist-user--away & .kiwi-avatar {
+        filter: saturate(0.5) brightness(0.85);
+        opacity: 0.7;
+    }
+
+    // Offline status: grayscale and more dimmed
+    .kiwi-nicklist-user--offline & .kiwi-avatar {
+        filter: grayscale(1) brightness(0.7);
+        opacity: 0.5;
     }
 }
 
@@ -146,8 +181,23 @@ export default {
     border: none;
 }
 
+.kiwi-nicklist-user-info {
+    display: flex;
+    align-items: center;
+
+    .kiwi-nicklist--avatars & {
+        flex-direction: column;
+        text-align: center;
+        width: 100%;
+    }
+}
+
 .kiwi-nicklist-user-prefix {
     flex-shrink: 0;
+
+    .kiwi-nicklist--avatars & {
+        margin-bottom: 2px;
+    }
 }
 
 .kiwi-nicklist-user-nick {
@@ -157,12 +207,24 @@ export default {
     overflow: hidden;
     font-weight: 700;
     text-overflow: ellipsis;
+
+    .kiwi-nicklist--avatars & {
+        margin-right: 0;
+        font-size: 14px;
+        max-width: 100%;
+    }
 }
 
 .kiwi-nicklist-user-buttons {
     position: relative;
     display: flex;
     align-items: center;
+
+    .kiwi-nicklist--avatars & {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
 }
 
 .kiwi-nicklist-user-typing {
@@ -217,6 +279,10 @@ export default {
     .kiwi-nicklist-user:hover & {
         right: 0;
         opacity: 1;
+    }
+
+    .kiwi-nicklist--avatars .kiwi-nicklist-user:hover & {
+        right: 0;
     }
 }
 </style>

@@ -28,7 +28,7 @@
         </div>
         <RecycleScroller
             :items="sortedUsers"
-            :item-size="shouldShowAvatars ? 38 : 26"
+            :item-size="shouldShowAvatars ? 250 : 26"
             :key-field="'id'"
             class="kiwi-nicklist-users"
         >
@@ -203,7 +203,18 @@ export default {
 
     @media screen and (max-width: 769px) {
         width: 100%;
-        max-width: 300px;
+        max-width: 340px;
+    }
+}
+
+// Larger sidebar width when avatars are enabled (for 200x200 images)
+.kiwi-container .kiwi-sidebar.kiwi-sidebar-section-nicklist:has(.kiwi-nicklist--avatars) {
+    width: 240px;
+    max-width: 240px;
+
+    @media screen and (max-width: 769px) {
+        width: 100%;
+        max-width: 240px;
     }
 }
 

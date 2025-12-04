@@ -11,13 +11,11 @@
             class="kiwi-statebrowser-usermenu-avatar"
             @click="is_usermenu_open = !is_usermenu_open"
         >
-            <UserAvatar
-                :user="getUser"
-                :network="network"
-                :allow-toggle="true"
-                :force-show-status="true"
-                size="large"
-            />
+            <img
+                :src="networkAvatarUrl"
+                :alt="networkName"
+                class="kiwi-statebrowser-network-avatar-img"
+            >
         </div>
         <div v-if="is_usermenu_open" class="kiwi-statebrowser-usermenu-body">
             <p> {{ $t('state_remembered') }} </p>
@@ -37,13 +35,8 @@
 
 import * as TextFormatting from '@/helpers/TextFormatting';
 
-import AwayStatusIndicator from './AwayStatusIndicator';
-import UserAvatar from './UserAvatar';
-
 export default {
     components: {
-        AwayStatusIndicator,
-        UserAvatar,
     },
     props: ['network'],
     data() {
@@ -59,12 +52,14 @@ export default {
             }
             return name;
         },
-        getUser() {
-            if (this.network && this.network.state && this.network.currentUser()) {
-                return this.network.currentUser();
+        networkAvatarUrl() {
+            if (this.network && this.network.name) {
+                // Convert network name to lowercase, replace spaces with underscores
+                const safeName = this.network.name.toLowerCase().replace(/\s+/g, '_');
+                return `static/avatars/${safeName}_lg.png`;
             }
-
-            return null;
+            // Fallback to a default image
+            return 'static/avatars/default_lg.png';
         },
         isConnected() {
             return this.network && this.network.state === 'connected';
@@ -117,10 +112,24 @@ export default {
 
 .kiwi-statebrowser-usermenu-avatar {
     position: relative;
-    width: 80px;
-    height: 80px;
+    width: 200px;
+    height: 200px;
     margin: 0 auto 10px auto;
     transition: background 0.2s;
+}
+
+.kiwi-statebrowser-network-avatar-img {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+    transition: filter 0.3s, opacity 0.3s;
+}
+
+/* Dimming for disconnected state */
+.kiwi-statebrowser-usermenu-avatar--disconnected .kiwi-statebrowser-network-avatar-img {
+    filter: grayscale(1) brightness(0.7);
+    opacity: 0.5;
 }
 
 .kiwi-statebrowser-usermenu-body {
