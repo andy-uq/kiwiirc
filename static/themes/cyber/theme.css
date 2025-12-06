@@ -1,50 +1,65 @@
 /* Cyberpunk/Tech Noir KiwiIRC Theme */
-/* Based on teal/cyan and gold color palette with industrial panels */
+/* Teal/cyan and gold with glassmorphism */
 
 :root {
+    /* Core cyber palette */
     --cyber-teal: #00d9ff;
     --cyber-teal-dark: #008b9e;
     --cyber-gold: #ffd700;
     --cyber-bg-dark: #0a1a1f;
     --cyber-bg-panel: #0d2329;
     --cyber-bg-lighter: #153238;
-    --cyber-border: #00d9ff;
     --cyber-text: #00ffc8;
     --cyber-text-dim: #6b9fa3;
+
+    /* Glass effects */
+    --cyber-glass: rgba(13, 35, 41, 0.75);
+    --cyber-glass-light: rgba(21, 50, 56, 0.6);
+    --cyber-glass-border: rgba(0, 217, 255, 0.25);
+    --cyber-glass-highlight: rgba(255, 255, 255, 0.08);
+    --cyber-glass-blur: 12px;
+
+    /* Chrome/metallic accents */
+    --cyber-chrome: #8aa8af;
+    --cyber-chrome-dark: #3a4a4f;
+
+    /* Nick colors - bright and varied for dark background */
+    --kiwi-nickcolour-count: 200;
+    --kiwi-nickcolour-hueoffset: 0;
+    --kiwi-nickcolour-saturation: 70;
+    --kiwi-nickcolour-lightness: 60;
 }
 
-/* Main background and container */
+/* Main background */
 .kiwi-wrap {
     background: var(--cyber-bg-dark);
     color: var(--cyber-text);
-    font-family: 'Courier New', 'Consolas', monospace;
 }
 
-/* Sidebar (channel list) */
+/* Sidebar (right panel) - Glass Panel */
 .kiwi-sidebar {
-    background: var(--cyber-bg-panel);
-    border-right: 2px solid var(--cyber-border);
-    box-shadow: inset -4px 0 8px rgba(0, 217, 255, 0.1);
+    background: var(--cyber-glass);
+    backdrop-filter: blur(var(--cyber-glass-blur));
+    -webkit-backdrop-filter: blur(var(--cyber-glass-blur));
+    border-left: 1px solid var(--cyber-glass-border);
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.3);
 }
 
-.kiwi-sidebar::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--cyber-gold), var(--cyber-teal));
+/* State browser (left channel list) */
+.kiwi-statebrowser {
+    background: var(--cyber-bg-panel);
+    border-right: 1px solid var(--cyber-glass-border);
 }
 
 /* Channel list header */
 .kiwi-sidebar-header {
-    background: var(--cyber-bg-dark);
-    border-bottom: 2px solid var(--cyber-teal-dark);
+    background: rgba(10, 26, 31, 0.8);
+    border-bottom: 1px solid var(--cyber-glass-border);
     color: var(--cyber-teal);
     text-transform: uppercase;
     letter-spacing: 2px;
-    padding: 15px;
+    font-weight: 700;
+    font-size: 0.85em;
 }
 
 /* Channel items */
@@ -56,131 +71,198 @@
 }
 
 .kiwi-channellist-item:hover {
-    background: var(--cyber-bg-lighter);
+    background: var(--cyber-glass-light);
     border-left-color: var(--cyber-gold);
     color: var(--cyber-gold);
 }
 
 .kiwi-channellist-item--active {
-    background: var(--cyber-bg-lighter);
+    background: var(--cyber-glass-light);
     border-left-color: var(--cyber-teal);
     color: var(--cyber-teal);
-    font-weight: bold;
+    font-weight: 600;
 }
 
 /* Message area */
 .kiwi-messagelist {
     background: var(--cyber-bg-dark);
-    background-image: 
-        repeating-linear-gradient(
-            0deg,
-            transparent,
-            transparent 2px,
-            rgba(0, 217, 255, 0.02) 2px,
-            rgba(0, 217, 255, 0.02) 4px
-        );
+    position: relative;
 }
 
-/* Individual messages */
+/* Background image - bottom right, monochrome tinted */
+.kiwi-messagelist::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/static/themes/cyber/bg-image.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: bottom right;
+    filter: grayscale(1) brightness(0.3) sepia(0.5) hue-rotate(65deg);
+    opacity: 0.4;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Ensure messages sit above background image */
 .kiwi-messagelist-message {
-    border-bottom: 1px solid rgba(0, 217, 255, 0.1);
-    padding: 8px 15px;
+    position: relative;
+    z-index: 1;
+    border-bottom: 1px solid rgba(0, 217, 255, 0.08);
+    transition: background 0.2s ease;
 }
 
 .kiwi-messagelist-message:hover {
-    background: rgba(0, 217, 255, 0.05);
+    background: var(--cyber-glass-light);
 }
 
 /* Message body text */
 .kiwi-messagelist-body {
     color: var(--cyber-text);
+    line-height: 1.5;
 }
 
 /* Timestamps */
 .kiwi-messagelist-time {
-    color: var(--cyber-gold);
+    color: var(--cyber-text-dim);
     font-size: 0.85em;
+    opacity: 0.8;
 }
 
 /* Nicknames */
 .kiwi-messagelist-nick {
     color: var(--cyber-teal);
-    font-weight: bold;
+    font-weight: 700;
 }
 
-/* Input area */
+/* Input area - Glass Panel */
 .kiwi-controlinput {
-    background: var(--cyber-bg-panel);
-    border-top: 2px solid var(--cyber-border);
-    box-shadow: 0 -4px 8px rgba(0, 217, 255, 0.1);
+    background: var(--cyber-glass);
+    backdrop-filter: blur(var(--cyber-glass-blur));
+    -webkit-backdrop-filter: blur(var(--cyber-glass-blur));
+    border-top: 1px solid var(--cyber-glass-border);
 }
 
 .kiwi-controlinput-input {
-    background: var(--cyber-bg-dark);
-    border: 1px solid var(--cyber-teal-dark);
+    background: rgba(10, 26, 31, 0.9);
+    border: 1px solid var(--cyber-glass-border);
     color: var(--cyber-text);
-    border-radius: 3px;
-    padding: 10px 15px;
+    border-radius: 4px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .kiwi-controlinput-input:focus {
     border-color: var(--cyber-teal);
     outline: none;
-    box-shadow: 0 0 10px rgba(0, 217, 255, 0.3);
+    box-shadow: 0 0 0 1px var(--cyber-teal), 0 0 15px rgba(0, 217, 255, 0.2);
 }
 
-/* User list */
+/* User list - Glass Panel */
 .kiwi-userlist {
-    background: var(--cyber-bg-panel);
-    border-left: 2px solid var(--cyber-border);
+    background: var(--cyber-glass);
+    backdrop-filter: blur(var(--cyber-glass-blur));
+    -webkit-backdrop-filter: blur(var(--cyber-glass-blur));
+    border-left: 1px solid var(--cyber-glass-border);
 }
 
 .kiwi-userlist-user {
     color: var(--cyber-text-dim);
-    border-bottom: 1px solid rgba(0, 217, 255, 0.1);
+    border-bottom: 1px solid rgba(0, 217, 255, 0.08);
     transition: all 0.2s ease;
 }
 
 .kiwi-userlist-user:hover {
-    background: var(--cyber-bg-lighter);
+    background: var(--cyber-glass-light);
     color: var(--cyber-gold);
 }
 
 /* Scrollbars */
 ::-webkit-scrollbar {
-    width: 10px;
+    width: 8px;
     background: var(--cyber-bg-dark);
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--cyber-teal-dark);
-    border: 2px solid var(--cyber-bg-dark);
+    background: var(--cyber-chrome-dark);
+    border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--cyber-teal);
+    background: var(--cyber-chrome);
 }
 
-/* Buttons */
+/* Buttons - base styles with glass effect */
+.u-button,
 .kiwi-button {
-    background: var(--cyber-bg-lighter);
-    border: 1px solid var(--cyber-teal);
-    color: var(--cyber-teal);
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    background: linear-gradient(180deg, var(--cyber-bg-lighter) 0%, var(--cyber-bg-dark) 100%);
+    border: 1px solid var(--cyber-chrome-dark);
+    border-bottom: 3px solid var(--cyber-chrome-dark);
+    color: var(--cyber-text-dim);
+    box-shadow: inset 0 1px 0 var(--cyber-glass-highlight), 0 2px 4px rgba(0, 0, 0, 0.5);
     transition: all 0.2s ease;
 }
 
+.u-button:hover,
 .kiwi-button:hover {
-    background: var(--cyber-teal);
-    color: var(--cyber-bg-dark);
-    box-shadow: 0 0 15px rgba(0, 217, 255, 0.5);
+    background: linear-gradient(180deg, var(--cyber-bg-lighter) 0%, var(--cyber-bg-panel) 100%);
+    border-bottom-color: var(--cyber-gold);
+    box-shadow: inset 0 1px 0 var(--cyber-glass-highlight), 0 3px 6px rgba(0, 0, 0, 0.5);
 }
 
-/* Topic bar */
+/* Primary button - teal trim */
+.u-button-primary {
+    background: linear-gradient(180deg, var(--cyber-bg-lighter) 0%, var(--cyber-bg-dark) 100%);
+    border: 1px solid var(--cyber-teal-dark);
+    border-bottom: 3px solid var(--cyber-teal-dark);
+    color: var(--cyber-teal);
+    box-shadow: inset 0 1px 0 var(--cyber-glass-highlight), inset 0 0 8px rgba(0, 217, 255, 0.1), 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.u-button-primary:hover {
+    background: linear-gradient(180deg, var(--cyber-bg-lighter) 0%, var(--cyber-bg-panel) 100%);
+    border-bottom-color: var(--cyber-gold);
+    box-shadow: inset 0 1px 0 var(--cyber-glass-highlight), 0 3px 6px rgba(0, 0, 0, 0.5);
+}
+
+/* Secondary button - chrome */
+.u-button-secondary {
+    background: linear-gradient(180deg, var(--cyber-chrome) 0%, var(--cyber-chrome-dark) 100%);
+    border: 1px solid var(--cyber-chrome-dark);
+    border-bottom: 3px solid var(--cyber-chrome-dark);
+    color: #000;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.u-button-secondary:hover {
+    background: linear-gradient(180deg, #9ab8bf 0%, var(--cyber-chrome) 100%);
+    border-bottom-color: var(--cyber-gold);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 3px 6px rgba(0, 0, 0, 0.5);
+}
+
+/* Warning button - gold */
+.u-button-warning {
+    background: linear-gradient(180deg, var(--cyber-gold) 0%, #8b6914 100%);
+    border: 1px solid #8b6914;
+    border-bottom: 3px solid #8b6914;
+    color: #000;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.u-button-warning:hover {
+    background: linear-gradient(180deg, #ffe033 0%, var(--cyber-gold) 100%);
+    border-bottom-color: var(--cyber-teal);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 3px 6px rgba(0, 0, 0, 0.5);
+}
+
+/* Topic bar - Glass Panel */
 .kiwi-header {
-    background: var(--cyber-bg-panel);
-    border-bottom: 2px solid var(--cyber-teal-dark);
+    background: var(--cyber-glass);
+    backdrop-filter: blur(var(--cyber-glass-blur));
+    -webkit-backdrop-filter: blur(var(--cyber-glass-blur));
+    border-bottom: 1px solid var(--cyber-glass-border);
     color: var(--cyber-text);
 }
 
@@ -188,35 +270,95 @@
     color: var(--cyber-text-dim);
 }
 
-/* Panel borders and accents */
-.kiwi-sidebar::after,
-.kiwi-userlist::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--cyber-teal), var(--cyber-gold));
-}
-
 /* Notification badges */
-.kiwi-channellist-item-label {
-    background: var(--cyber-gold);
+.kiwi-statebrowser-channel-label {
+    background: var(--cyber-chrome);
     color: var(--cyber-bg-dark);
-    border-radius: 3px;
-    font-weight: bold;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.75em;
 }
 
 /* Links */
 a {
     color: var(--cyber-teal);
     text-decoration: none;
-    border-bottom: 1px solid transparent;
-    transition: all 0.2s ease;
+    transition: color 0.2s ease;
 }
 
 a:hover {
     color: var(--cyber-gold);
+}
+
+/* Away Status Indicator */
+.kiwi-awaystatusindicator,
+.kiwi-avatar-status {
+    background-color: var(--cyber-teal);
+    fill: var(--cyber-teal);
+}
+
+.kiwi-awaystatusindicator.kiwi-awaystatusindicator--away,
+.kiwi-avatar-status--away {
+    background-color: var(--cyber-gold);
+    fill: var(--cyber-gold);
+}
+
+.kiwi-awaystatusindicator.kiwi-awaystatusindicator--offline,
+.kiwi-avatar-status--offline {
+    background-color: #ff4757;
+    fill: #ff4757;
+}
+
+/* Channel/Buffer icons in state browser */
+.kiwi-statebrowser-channel::before {
+    color: var(--cyber-teal);
+}
+
+.kiwi-statebrowser-channel:hover::before {
+    color: var(--cyber-gold);
+}
+
+.kiwi-statebrowser-channel-active::before {
+    color: var(--cyber-teal);
+}
+
+/* Nicklist user buttons */
+.kiwi-nicklist-user-typing {
+    fill: var(--cyber-text-dim);
+}
+
+.kiwi-nicklist-user-message {
+    fill: var(--cyber-teal);
+}
+
+.kiwi-nicklist-user-message:hover {
+    fill: var(--cyber-gold);
+}
+
+/* Tabbed view with glass effect */
+.u-tabbed-view-tabs {
+    background: linear-gradient(180deg, var(--cyber-bg-panel) 0%, var(--cyber-bg-dark) 100%);
+    border-bottom: 1px solid var(--cyber-glass-border);
+}
+
+.u-tabbed-view-tabs .u-tabbed-view-tab {
+    background: linear-gradient(180deg, var(--cyber-bg-lighter) 0%, var(--cyber-bg-dark) 100%);
+    color: var(--cyber-teal);
+    border: 1px solid var(--cyber-chrome-dark);
+    border-bottom: 3px solid var(--cyber-chrome-dark);
+    box-shadow: inset 0 1px 0 var(--cyber-glass-highlight), 0 2px 4px rgba(0, 0, 0, 0.5);
+    transition: all 0.2s ease;
+}
+
+.u-tabbed-view-tabs .u-tabbed-view-tab:hover {
+    background: linear-gradient(180deg, var(--cyber-bg-lighter) 0%, var(--cyber-bg-panel) 100%);
     border-bottom-color: var(--cyber-gold);
+    box-shadow: inset 0 1px 0 var(--cyber-glass-highlight), 0 3px 6px rgba(0, 0, 0, 0.5);
+}
+
+.u-tabbed-view-tabs .u-tabbed-view-tab.u-tabbed-view-tab--active {
+    background: linear-gradient(180deg, var(--cyber-bg-lighter) 0%, var(--cyber-bg-panel) 100%);
+    color: var(--cyber-teal);
+    border-bottom-color: var(--cyber-teal);
+    box-shadow: inset 0 1px 0 var(--cyber-glass-highlight), inset 0 0 8px rgba(0, 217, 255, 0.1), 0 2px 4px rgba(0, 0, 0, 0.5);
 }

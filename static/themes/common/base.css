@@ -399,6 +399,10 @@
     background-color: var(--comp-usermenu-open-bg);
 }
 
+.kiwi-statebrowser-usermenu {
+    cursor: pointer;
+}
+
 .kiwi-statebrowser-usermenu-body .u-link {
     color: var(--brand-error);
 }
