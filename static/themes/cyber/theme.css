@@ -9,8 +9,8 @@
     --cyber-bg-dark: #0a1a1f;
     --cyber-bg-panel: #0d2329;
     --cyber-bg-lighter: #153238;
-    --cyber-text: #00ffc8;
-    --cyber-text-dim: #6b9fa3;
+    --cyber-text: #d8f1e9;
+    --cyber-text-dim: #8aacac;
 
     /* Glass effects */
     --cyber-glass: rgba(13, 35, 41, 0.75);
@@ -23,11 +23,11 @@
     --cyber-chrome: #8aa8af;
     --cyber-chrome-dark: #3a4a4f;
 
-    /* Nick colors - bright and varied for dark background */
+    /* Nick colors - desaturated for theme harmony */
     --kiwi-nickcolour-count: 200;
     --kiwi-nickcolour-hueoffset: 0;
-    --kiwi-nickcolour-saturation: 70;
-    --kiwi-nickcolour-lightness: 60;
+    --kiwi-nickcolour-saturation: 40;
+    --kiwi-nickcolour-lightness: 65;
 }
 
 /* Main background */
@@ -102,7 +102,7 @@
     background-repeat: no-repeat;
     background-position: bottom right;
     filter: grayscale(1) brightness(0.3) sepia(0.5) hue-rotate(65deg);
-    opacity: 0.4;
+    opacity: 0.2;
     z-index: 0;
     pointer-events: none;
 }
@@ -112,6 +112,7 @@
     position: relative;
     z-index: 1;
     border-bottom: 1px solid rgba(0, 217, 255, 0.08);
+    padding: 12px 15px;
     transition: background 0.2s ease;
 }
 
@@ -122,7 +123,7 @@
 /* Message body text */
 .kiwi-messagelist-body {
     color: var(--cyber-text);
-    line-height: 1.5;
+    line-height: 1.6;
 }
 
 /* Timestamps */
@@ -267,7 +268,48 @@
 }
 
 .kiwi-header-topic {
-    color: var(--cyber-text-dim);
+    color: var(--cyber-text);
+    font-size: 0.95em;
+    padding: 8px 0;
+}
+
+/* Header option icons */
+.kiwi-header-options {
+    margin-top: 5px;
+}
+
+.kiwi-header-option a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 26px;
+    height: 22px;
+    padding: 0 4px;
+    background: var(--cyber-bg-lighter);
+    border: 1px solid var(--cyber-teal-dark);
+    border-radius: 11px;
+    color: var(--cyber-text);
+    font-size: 12px;
+    line-height: 22px;
+    transition: all 0.2s ease;
+}
+
+.kiwi-header-option a:hover {
+    background: var(--cyber-teal-dark);
+    border-color: var(--cyber-teal);
+    color: #fff;
+    box-shadow: 0 0 10px rgba(0, 217, 255, 0.4);
+}
+
+.kiwi-header-option--active a {
+    background: var(--cyber-teal);
+    border-color: var(--cyber-teal);
+    color: var(--cyber-bg-dark);
+}
+
+.kiwi-header-option i {
+    font-size: 1em;
+    line-height: 22px;
 }
 
 /* Notification badges */
@@ -361,4 +403,132 @@ a:hover {
     color: var(--cyber-teal);
     border-bottom-color: var(--cyber-teal);
     box-shadow: inset 0 1px 0 var(--cyber-glass-highlight), inset 0 0 8px rgba(0, 217, 255, 0.1), 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Reaction bar */
+.kiwi-messagelist-reactionbar {
+    padding-left: 3px;
+}
+
+.kiwi-messagelist-reactionbar-emoji {
+    background: var(--cyber-bg-panel);
+    border: 1px solid var(--cyber-chrome-dark);
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.kiwi-messagelist-reactionbar-emoji:hover:not(.kiwi-messagelist-reactionbar-emoji--disabled) {
+    background: var(--cyber-bg-lighter);
+    border-color: var(--cyber-gold);
+    box-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
+    transform: translateY(-1px);
+}
+
+.kiwi-messagelist-reactionbar-emoji--selected {
+    background: var(--cyber-bg-lighter);
+    border-color: var(--cyber-teal);
+    box-shadow: 0 0 6px rgba(0, 217, 255, 0.3);
+}
+
+/* Message reactions badges */
+.kiwi-message-reactions-badge {
+    background: var(--cyber-bg-panel);
+    border: 1px solid var(--cyber-chrome-dark);
+    border-radius: 12px;
+    transition: all 0.2s ease;
+}
+
+.kiwi-message-reactions-badge:hover {
+    background: var(--cyber-bg-lighter);
+    border-color: var(--cyber-gold);
+    box-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
+}
+
+.kiwi-message-reactions-badge--own {
+    background: var(--cyber-bg-lighter);
+    border-color: var(--cyber-teal);
+}
+
+/* Topic/Status messages in message list */
+.kiwi-messagelist-message-topic.kiwi-messagelist-message-topic {
+    background: linear-gradient(135deg, rgba(0, 217, 255, 0.08) 0%, rgba(0, 139, 158, 0.05) 100%);
+    border: 1px solid var(--cyber-teal-dark);
+    border-left: 4px solid var(--cyber-teal);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(0, 217, 255, 0.1);
+    margin: 16px 20px;
+    padding: 12px 16px;
+    text-align: left;
+}
+
+.kiwi-messagelist-message-topic .kiwi-messagelist-body {
+    color: var(--cyber-teal);
+    font-size: 0.95em;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}
+
+.kiwi-messagelist-message-topic .kiwi-messagelist-body::before {
+    color: var(--cyber-teal);
+    text-shadow: 0 0 8px rgba(0, 217, 255, 0.5);
+}
+
+/* Checkboxes */
+input[type='checkbox'] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    background: var(--cyber-bg-dark);
+    border: 1px solid var(--cyber-chrome-dark);
+    border-radius: 3px;
+    cursor: pointer;
+    vertical-align: middle;
+    transition: all 0.2s ease;
+}
+
+input[type='checkbox']:checked {
+    background: var(--cyber-teal);
+    border-color: var(--cyber-teal);
+}
+
+input[type='checkbox']:checked::after {
+    content: '\f00c';
+    font-family: fontAwesome;
+    color: var(--cyber-bg-dark);
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+input[type='checkbox']:hover {
+    border-color: var(--cyber-teal);
+}
+
+/* Nicklist spacing */
+.kiwi-nicklist-user {
+    height: 32px;
+    max-height: 32px;
+}
+
+/* UserBox header - vertical layout for cyber theme */
+.kiwi-sidebar .kiwi-userbox .kiwi-userbox-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.kiwi-sidebar .kiwi-userbox .kiwi-userbox-avatar {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    aspect-ratio: 1;
+    margin: 1em auto;
+}
+
+.kiwi-sidebar .kiwi-userbox .kiwi-userbox-userinfo {
+    text-align: center;
+    margin-top: 0.5em;
+    width: 100%;
 }

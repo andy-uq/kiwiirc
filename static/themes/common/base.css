@@ -943,6 +943,14 @@
     background: var(--brand-default-bg);
 }
 
+.kiwi-messagelist-message-topic .kiwi-messagelist-body::before {
+    content: '\f05a' !important;
+    font-family: fontAwesome, Helvetica, Arial, Verdana, Tahoma, sans-serif !important;
+    margin-right: 8px !important;
+    font-weight: 400 !important;
+    display: inline !important;
+}
+
 .kiwi-messagelist-message--modern.kiwi-messagelist-message--authorrepeat.kiwi-messagelist-message-topic {
     border-top: 2px solid var(--brand-primary);
 }
