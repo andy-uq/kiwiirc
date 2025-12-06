@@ -10,6 +10,7 @@
     "themes": [
         { "name": "Default", "url": "static/themes/default" },
         { "name": "Nephele", "url": "static/themes/nephele" },
+	{ "name": "Cyber", "url": "static/themes/cyber" },
         { "name": "Dark", "url": "static/themes/dark" },
         { "name": "Coffee", "url": "static/themes/coffee" },
         { "name": "GrayFox", "url": "static/themes/grayfox" },
@@ -20,7 +21,7 @@
         { "name": "Elite", "url": "static/themes/elite" }
     ],
     "startupOptions" : {
-        "channel": "#kiwiirc-default",
+        "channel": "#lobby",
         "nick": "kiwi-n?",
         "direct": true,
         "server": "localhost",

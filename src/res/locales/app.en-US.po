@@ -559,6 +559,10 @@ msgstr "Display Topic"
 msgid "channel_settings"
 msgstr "Channel Settings"
 
+#: Clear Messages
+msgid "clear_buffer"
+msgstr "Clear Messages"
+
 #: Join Channel
 msgid "container_join"
 msgstr "Join Channel"

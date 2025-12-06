@@ -1,0 +1,222 @@
+/* Cyberpunk/Tech Noir KiwiIRC Theme */
+/* Based on teal/cyan and gold color palette with industrial panels */
+
+:root {
+    --cyber-teal: #00d9ff;
+    --cyber-teal-dark: #008b9e;
+    --cyber-gold: #ffd700;
+    --cyber-bg-dark: #0a1a1f;
+    --cyber-bg-panel: #0d2329;
+    --cyber-bg-lighter: #153238;
+    --cyber-border: #00d9ff;
+    --cyber-text: #00ffc8;
+    --cyber-text-dim: #6b9fa3;
+}
+
+/* Main background and container */
+.kiwi-wrap {
+    background: var(--cyber-bg-dark);
+    color: var(--cyber-text);
+    font-family: 'Courier New', 'Consolas', monospace;
+}
+
+/* Sidebar (channel list) */
+.kiwi-sidebar {
+    background: var(--cyber-bg-panel);
+    border-right: 2px solid var(--cyber-border);
+    box-shadow: inset -4px 0 8px rgba(0, 217, 255, 0.1);
+}
+
+.kiwi-sidebar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--cyber-gold), var(--cyber-teal));
+}
+
+/* Channel list header */
+.kiwi-sidebar-header {
+    background: var(--cyber-bg-dark);
+    border-bottom: 2px solid var(--cyber-teal-dark);
+    color: var(--cyber-teal);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    padding: 15px;
+}
+
+/* Channel items */
+.kiwi-channellist-item {
+    background: transparent;
+    border-left: 3px solid transparent;
+    color: var(--cyber-text-dim);
+    transition: all 0.2s ease;
+}
+
+.kiwi-channellist-item:hover {
+    background: var(--cyber-bg-lighter);
+    border-left-color: var(--cyber-gold);
+    color: var(--cyber-gold);
+}
+
+.kiwi-channellist-item--active {
+    background: var(--cyber-bg-lighter);
+    border-left-color: var(--cyber-teal);
+    color: var(--cyber-teal);
+    font-weight: bold;
+}
+
+/* Message area */
+.kiwi-messagelist {
+    background: var(--cyber-bg-dark);
+    background-image: 
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 2px,
+            rgba(0, 217, 255, 0.02) 2px,
+            rgba(0, 217, 255, 0.02) 4px
+        );
+}
+
+/* Individual messages */
+.kiwi-messagelist-message {
+    border-bottom: 1px solid rgba(0, 217, 255, 0.1);
+    padding: 8px 15px;
+}
+
+.kiwi-messagelist-message:hover {
+    background: rgba(0, 217, 255, 0.05);
+}
+
+/* Message body text */
+.kiwi-messagelist-body {
+    color: var(--cyber-text);
+}
+
+/* Timestamps */
+.kiwi-messagelist-time {
+    color: var(--cyber-gold);
+    font-size: 0.85em;
+}
+
+/* Nicknames */
+.kiwi-messagelist-nick {
+    color: var(--cyber-teal);
+    font-weight: bold;
+}
+
+/* Input area */
+.kiwi-controlinput {
+    background: var(--cyber-bg-panel);
+    border-top: 2px solid var(--cyber-border);
+    box-shadow: 0 -4px 8px rgba(0, 217, 255, 0.1);
+}
+
+.kiwi-controlinput-input {
+    background: var(--cyber-bg-dark);
+    border: 1px solid var(--cyber-teal-dark);
+    color: var(--cyber-text);
+    border-radius: 3px;
+    padding: 10px 15px;
+}
+
+.kiwi-controlinput-input:focus {
+    border-color: var(--cyber-teal);
+    outline: none;
+    box-shadow: 0 0 10px rgba(0, 217, 255, 0.3);
+}
+
+/* User list */
+.kiwi-userlist {
+    background: var(--cyber-bg-panel);
+    border-left: 2px solid var(--cyber-border);
+}
+
+.kiwi-userlist-user {
+    color: var(--cyber-text-dim);
+    border-bottom: 1px solid rgba(0, 217, 255, 0.1);
+    transition: all 0.2s ease;
+}
+
+.kiwi-userlist-user:hover {
+    background: var(--cyber-bg-lighter);
+    color: var(--cyber-gold);
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+    width: 10px;
+    background: var(--cyber-bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--cyber-teal-dark);
+    border: 2px solid var(--cyber-bg-dark);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--cyber-teal);
+}
+
+/* Buttons */
+.kiwi-button {
+    background: var(--cyber-bg-lighter);
+    border: 1px solid var(--cyber-teal);
+    color: var(--cyber-teal);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.2s ease;
+}
+
+.kiwi-button:hover {
+    background: var(--cyber-teal);
+    color: var(--cyber-bg-dark);
+    box-shadow: 0 0 15px rgba(0, 217, 255, 0.5);
+}
+
+/* Topic bar */
+.kiwi-header {
+    background: var(--cyber-bg-panel);
+    border-bottom: 2px solid var(--cyber-teal-dark);
+    color: var(--cyber-text);
+}
+
+.kiwi-header-topic {
+    color: var(--cyber-text-dim);
+}
+
+/* Panel borders and accents */
+.kiwi-sidebar::after,
+.kiwi-userlist::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--cyber-teal), var(--cyber-gold));
+}
+
+/* Notification badges */
+.kiwi-channellist-item-label {
+    background: var(--cyber-gold);
+    color: var(--cyber-bg-dark);
+    border-radius: 3px;
+    font-weight: bold;
+}
+
+/* Links */
+a {
+    color: var(--cyber-teal);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: all 0.2s ease;
+}
+
+a:hover {
+    color: var(--cyber-gold);
+    border-bottom-color: var(--cyber-gold);
+}

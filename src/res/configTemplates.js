@@ -112,7 +112,7 @@ export const configTemplates = {
         autoReconnect: false,
         disconnectOnSaslFail: true,
         allowRegisterProtocolHandler: false,
-        noticeActiveBuffer: true,
+        noticeActiveBuffer: false,
         nicklistGroupAway: false,
         showChanlistModes: false,
         showAutocomplete: true,

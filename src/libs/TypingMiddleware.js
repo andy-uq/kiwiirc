@@ -7,11 +7,25 @@
  */
 export default function typingMiddleware() {
     return function middleware(client, rawEvents, parsedEvents) {
+        client.requestCap('typing');
         addFunctionsToClient(client);
         rawEvents.use(theMiddleware);
     };
 
     function theMiddleware(command, message, rawLine, client, next) {
+        // Debug: Log all TAGMSG commands
+        if (command === 'TAGMSG') {
+            console.log('[TypingMiddleware] TAGMSG received:', {
+                command,
+                tags: message.tags,
+                hasTypingTag: !!message.tags['+typing'],
+                typingValue: message.tags['+typing'],
+                nick: message.nick,
+                params: message.params,
+                rawLine,
+            });
+        }
+
         if (
             !(command === 'TAGMSG' && message.tags['+typing']) &&
             !(command === 'PRIVMSG' && message.nick)
@@ -41,6 +55,12 @@ export default function typingMiddleware() {
 
         // if its a privmsg without typing tag emit done
         let status = message.tags['+typing'] || 'done';
+
+        console.log('[TypingMiddleware] Emitting typing event:', {
+            target,
+            nick: message.nick,
+            status,
+        });
 
         client.emit('typing', {
             target: target,

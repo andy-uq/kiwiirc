@@ -26,6 +26,16 @@ export function create(state, network) {
     ircClient.use(typingMiddleware());
     ircClient.use(reactionMiddleware());
 
+    // Update message_max_length based on ISUPPORT LINELENGTH parameter
+    ircClient.on('server options', (event) => {
+        if (event.options && event.options.LINELENGTH) {
+            let lineLength = parseInt(event.options.LINELENGTH, 10);
+            if (!Number.isNaN(lineLength) && lineLength > 0) {
+                ircClient.options.message_max_length = lineLength;
+            }
+        }
+    });
+
     // Overload the connect() function to make sure we are connecting with the
     // most recent connection details from the network state
     let originalIrcClientConnect = ircClient.connect;
@@ -56,6 +66,10 @@ export function create(state, network) {
         ircClient.options.encoding = network.connection.encoding;
         ircClient.options.auto_reconnect = !!state.setting('autoReconnect');
         ircClient.options.sasl_disconnect_on_fail = !!state.setting('disconnectOnSaslFail');
+
+        // Reset message_max_length to default on each connection
+        // It will be updated if the server sends LINELENGTH in ISUPPORT
+        ircClient.options.message_max_length = 350;
 
         // Apply any irc-fw options specified in kiwiirc config
         let configOptions = state.setting('ircFramework');
@@ -133,9 +147,23 @@ export function create(state, network) {
     });
 
     ircClient.on('typing', (event) => {
+        console.log('[IrcClient] Typing event received:', event);
         let user = state.getUser(network.id, event.nick);
+
+        // If user doesn't exist, create them (can happen for query/PM typing indicators)
+        if (!user) {
+            console.log('[IrcClient] User not found, creating user:', event.nick);
+            user = state.addUser(network.id, {
+                nick: event.nick,
+                ident: event.ident,
+                hostname: event.hostname,
+            });
+        }
+
+        console.log('[IrcClient] User found:', user ? user.nick : 'null');
         if (user) {
             user.typingStatus(event.target, event.status);
+            console.log('[IrcClient] Updated typing status for', user.nick, 'in', event.target, 'to', event.status);
         }
     });
 
@@ -155,6 +183,21 @@ export function create(state, network) {
 
         // Add the reaction to the message
         targetMessage.addReaction(event.emoji, event.nick, event.time);
+    });
+
+    // Automatically WHOIS when a new query/DM buffer is created
+    state.$on('buffer.new', (eventObj) => {
+        const buffer = eventObj.buffer;
+        const bufferNetwork = buffer.getNetwork();
+
+        // Only auto-whois for query buffers on this network when connected
+        if (buffer.isQuery() &&
+            bufferNetwork &&
+            bufferNetwork.id === network.id &&
+            bufferNetwork.state === 'connected') {
+            console.log('[IrcClient] Auto-WHOIS for new query buffer:', buffer.name);
+            ircClient.whois(buffer.name);
+        }
     });
 
     return ircClient;

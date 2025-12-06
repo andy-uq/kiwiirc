@@ -56,6 +56,11 @@
                         <i class="fa fa-info" aria-hidden="true" />
                     </a>
                 </div>
+                <div class="kiwi-header-option kiwi-header-option-clear">
+                    <a :title="$t('clear_buffer')" @click="clearBufferMessages()">
+                        <i class="fa fa-eraser" aria-hidden="true" />
+                    </a>
+                </div>
                 <component
                     :is="plugin.component"
                     v-for="plugin in pluginUiChannelElements"
@@ -99,6 +104,13 @@
                     {{ $t('connecting') }}
                 </span>
             </div>
+            <div class="kiwi-header-options">
+                <div class="kiwi-header-option kiwi-header-option-clear">
+                    <a :title="$t('clear_buffer')" @click="clearBufferMessages()">
+                        <i class="fa fa-eraser" aria-hidden="true" />
+                    </a>
+                </div>
+            </div>
         </template>
 
         <template v-else-if="isQuery()">
@@ -131,6 +143,11 @@
                         <i class="fa fa-user" aria-hidden="true" />
                     </a>
                 </div>
+                <div class="kiwi-header-option kiwi-header-option-clear">
+                    <a :title="$t('clear_buffer')" @click="clearBufferMessages()">
+                        <i class="fa fa-eraser" aria-hidden="true" />
+                    </a>
+                </div>
                 <component
                     :is="plugin.component"
                     v-for="plugin in pluginUiQueryElements"
@@ -157,7 +174,11 @@
             </div>
             <div class="kiwi-header-center" />
             <div class="kiwi-header-options">
-                <!-- placeholder -->
+                <div class="kiwi-header-option kiwi-header-option-clear">
+                    <a :title="$t('clear_buffer')" @click="clearBufferMessages()">
+                        <i class="fa fa-eraser" aria-hidden="true" />
+                    </a>
+                </div>
             </div>
         </template>
     </div>
@@ -257,6 +278,13 @@ export default {
                 this.$state.addBuffer(this.buffer.networkid, channelName);
                 network.ircClient.join(channelName);
             }
+        },
+        clearBufferMessages() {
+            this.buffer.clearMessages();
+            this.$state.addMessage(this.buffer, {
+                nick: '*',
+                message: 'Scrollback cleared',
+            });
         },
     },
 };

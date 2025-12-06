@@ -141,6 +141,13 @@ export default class UserState {
 
     typingStatus(_target, status) {
         let target = _target.toUpperCase();
+        console.log('[UserState] typingStatus called:', {
+            user: this.nick,
+            target,
+            status,
+            currentState: this.typingState[target],
+        });
+
         if (!status) {
             return this.typingState[target] || { status: '' };
         }
@@ -149,6 +156,7 @@ export default class UserState {
         if (!typing) {
             Vue.set(this.typingState, target, { started: 0, status: '' });
             typing = this.typingState[target];
+            console.log('[UserState] Created new typing state for', this.nick, 'in', target);
         }
 
         if (typing.timeout) {
@@ -157,12 +165,14 @@ export default class UserState {
         }
 
         if (status === 'done') {
+            console.log('[UserState] Removing typing state for', this.nick, 'in', target);
             Vue.delete(this.typingState, target);
             return null;
         }
 
         typing.started = Date.now();
         typing.status = status;
+        console.log('[UserState] Updated typing state for', this.nick, 'in', target, 'to', status);
 
         // Paused state gets a longer timeout as it's usually someone stopping typing
         // to think about their words
