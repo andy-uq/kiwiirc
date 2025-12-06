@@ -962,10 +962,6 @@ div.kiwi-messagelist-item.kiwi-messagelist-item--selected .kiwi-messagelist-mess
 .kiwi-messagelist-message-topic .kiwi-messagelist-body {
     min-height: 0;
     margin: 0;
-
-    &::before {
-        display: none;
-    }
 }
 
 .kiwi-messagelist-message-topic.kiwi-messagelist-message-topic .kiwi-messagelist-time {

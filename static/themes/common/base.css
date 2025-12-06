@@ -576,7 +576,7 @@
 /* Icon before the network in network list */
 .kiwi-statebrowser-network-name::before {
     content: '\f233';
-    font-family: fontAwesome, Helvetica, Arial, Verdana, Tahoma, sans-serif;
+    font-family: FontAwesome, Helvetica, Arial, Verdana, Tahoma, sans-serif;
     margin-right: 2px;
     font-weight: 100;
     text-decoration: none;
@@ -592,7 +592,7 @@
 }
 
 .kiwi-statebrowser-channel::before {
-    font-family: fontAwesome, Helvetica, Arial, Verdana, Tahoma, sans-serif;
+    font-family: FontAwesome, Helvetica, Arial, Verdana, Tahoma, sans-serif;
     margin-right: 8px;
     font-weight: 100;
 }
@@ -903,6 +903,32 @@
     color: var(--brand-error);
 }
 
+/* ---- Message Type Icons ---- */
+.kiwi-messagelist-body > i.fa.kiwi-messagelist-message-icon {
+    font-size: 1.2em !important;
+    margin-right: 5px !important;
+}
+
+.kiwi-messagelist-message-icon--join {
+    color: var(--brand-primary);
+}
+
+.kiwi-messagelist-message-icon--part,
+.kiwi-messagelist-message-icon--quit,
+.kiwi-messagelist-message-icon--kick {
+    color: var(--brand-error);
+}
+
+.kiwi-messagelist-message-icon--mode,
+.kiwi-messagelist-message-icon--nick,
+.kiwi-messagelist-message-icon--topic {
+    color: var(--brand-primary);
+}
+
+.kiwi-messagelist-message-icon--error {
+    color: var(--brand-default-bg);
+}
+
 /* ---- Modern Layout Styling ---- */
 .kiwi-avatar-initials {
     fill: var(--brand-default-bg);
@@ -941,14 +967,6 @@
     border-bottom: 1px solid var(--brand-primary);
     color: var(--brand-default-fg);
     background: var(--brand-default-bg);
-}
-
-.kiwi-messagelist-message-topic .kiwi-messagelist-body::before {
-    content: '\f05a' !important;
-    font-family: fontAwesome, Helvetica, Arial, Verdana, Tahoma, sans-serif !important;
-    margin-right: 8px !important;
-    font-weight: 400 !important;
-    display: inline !important;
 }
 
 .kiwi-messagelist-message--modern.kiwi-messagelist-message--authorrepeat.kiwi-messagelist-message-topic {

@@ -186,7 +186,7 @@ export default {
     align-items: center;
 
     .kiwi-nicklist--avatars & {
-        flex-direction: column;
+        justify-content: center;
         text-align: center;
         width: 100%;
     }
@@ -194,10 +194,6 @@ export default {
 
 .kiwi-nicklist-user-prefix {
     flex-shrink: 0;
-
-    .kiwi-nicklist--avatars & {
-        margin-bottom: 2px;
-    }
 }
 
 .kiwi-nicklist-user-nick {
@@ -209,6 +205,7 @@ export default {
     text-overflow: ellipsis;
 
     .kiwi-nicklist--avatars & {
+        flex: none;
         margin-right: 0;
         font-size: 14px;
         max-width: 100%;

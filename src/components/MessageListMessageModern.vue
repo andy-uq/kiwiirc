@@ -107,8 +107,15 @@
             <div
                 v-else
                 class="kiwi-messagelist-body"
-                v-html="props.ml.formatMessage(props.message)"
-            />
+            >
+                <i
+                    v-if="props.m().getMessageIcon(props.message)"
+                    :class="props.m().getMessageIcon(props.message)"
+                    class="fa kiwi-messagelist-message-icon"
+                    aria-hidden="true"
+                />
+                <span v-html="props.ml.formatMessage(props.message)" />
+            </div>
 
             <component
                 :is="injections.components.MessageInfo"
@@ -234,6 +241,41 @@ const methods = {
     isMessage(message) {
         let types = ['privmsg', 'action', 'notice', 'message'];
         return types.indexOf(message.type) > -1;
+    },
+    getMessageIcon(message) {
+        // Returns Font Awesome icon classes based on message type
+        let type = message.type;
+        let typeExtra = message.type_extra || '';
+
+        if (type === 'traffic') {
+            if (typeExtra.startsWith('join')) {
+                return 'fa-sign-in kiwi-messagelist-message-icon--join';
+            }
+            if (typeExtra.startsWith('part') || typeExtra.startsWith('quit')) {
+                return 'fa-sign-out kiwi-messagelist-message-icon--part';
+            }
+            if (typeExtra.startsWith('kick')) {
+                return 'fa-ban kiwi-messagelist-message-icon--kick';
+            }
+        }
+
+        if (type === 'mode') {
+            return 'fa-info-circle kiwi-messagelist-message-icon--mode';
+        }
+
+        if (type === 'nick') {
+            return 'fa-info-circle kiwi-messagelist-message-icon--nick';
+        }
+
+        if (type === 'topic') {
+            return 'fa-info-circle kiwi-messagelist-message-icon--topic';
+        }
+
+        if (type === 'error') {
+            return 'fa-exclamation-triangle kiwi-messagelist-message-icon--error';
+        }
+
+        return null;
     },
     displayAvatar(message) {
         let props = this.props;
