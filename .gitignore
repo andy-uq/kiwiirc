@@ -5,7 +5,7 @@ node_modules/
 src/res/locales/available.json
 static/config.local.json
 tests/coverage
-
+yarn.lock
 
 # local env files
 .env.local
