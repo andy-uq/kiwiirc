@@ -911,3 +911,15 @@ inputCommands.notify = function inputCommandNotify(event, command, line, context
     event.handled = true;
     this.state.$emit('notification.show', line);
 };
+
+inputCommands.help = function inputCommandHelp(event, command, line, context) {
+    event.handled = true;
+    const { network } = context;
+
+    // Send HELP command to server, optionally with a topic
+    if (line.trim()) {
+        network.ircClient.raw('HELP', line.trim());
+    } else {
+        network.ircClient.raw('HELP');
+    }
+};

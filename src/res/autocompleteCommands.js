@@ -22,6 +22,7 @@ export default [
     { command: 'server', alias: [], description: 'locale_id_command_server' },
     { command: 'whois', alias: [], description: 'locale_id_command_whois' },
     { command: 'whowas', alias: [], description: 'locale_id_command_whowas' },
+    { command: 'help', alias: [], description: 'locale_id_command_help' },
     { command: 'away', alias: [], description: 'locale_id_command_away' },
     { command: 'back', alias: ['active'], description: 'locale_id_command_back' },
     { command: 'encoding', alias: [], description: 'locale_id_command_encoding' },
