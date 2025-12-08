@@ -69,6 +69,11 @@ module.exports = {
                         },
                         info: { minimized: true },
                     },
+                    {
+                        from: path.join(__dirname, 'serve.json'),
+                        to: path.join(__dirname, 'dist/serve.json'),
+                        toType: 'file',
+                    },
                 ],
             }),
         ],

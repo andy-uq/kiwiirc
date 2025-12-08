@@ -6,19 +6,17 @@ kiwi.plugin('avatars', function(kiwi, log) {
         const nickClean = nick.toLowerCase().trim();
         const realnameClean = realname ? realname.toLowerCase().trim() : '';
 
-        // Try nick first, fallback to realname
-        const smallPrimary = AVATAR_BASE + nickClean + '_sm.png';
-        const largePrimary = AVATAR_BASE + nickClean + '_lg.png';
-        const smallFallback = realnameClean ? AVATAR_BASE + realnameClean + '_sm.png' : '';
-        const largeFallback = realnameClean ? AVATAR_BASE + realnameClean + '_lg.png' : '';
+        // Try nick first, fallback to realname (use _lg.png for both sizes)
+        const avatarPrimary = AVATAR_BASE + nickClean + '_lg.png';
+        const avatarFallback = realnameClean ? AVATAR_BASE + realnameClean + '_lg.png' : '';
 
-        user.avatar.small = smallPrimary;
-        user.avatar.large = largePrimary;
+        user.avatar.small = avatarPrimary;
+        user.avatar.large = avatarPrimary;
 
         // Store fallbacks for the error handler
         user.avatarFallback = {
-            small: smallFallback,
-            large: largeFallback,
+            small: avatarFallback,
+            large: avatarFallback,
         };
     }
 
