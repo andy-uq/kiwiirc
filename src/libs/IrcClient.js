@@ -7,6 +7,7 @@ import * as TextFormatting from '@/helpers/TextFormatting';
 import typingMiddleware from './TypingMiddleware';
 import chathistoryMiddleware from './ChathistoryMiddleware';
 import reactionMiddleware from './ReactionMiddleware';
+import batchMiddleware from './BatchMiddleware';
 import * as ServerConnection from './ServerConnection';
 
 export function create(state, network) {
@@ -21,6 +22,7 @@ export function create(state, network) {
     });
     ircClient.requestCap('znc.in/self-message');
     ircClient.requestCap('echo-message');
+    ircClient.use(batchMiddleware());
     ircClient.use(chathistoryMiddleware());
     ircClient.use(clientMiddleware(state, network));
     ircClient.use(typingMiddleware());
@@ -252,6 +254,54 @@ function clientMiddleware(state, network) {
                 buffer.clearUsers();
             });
         });
+
+        // Handle coalesced multiline batch messages
+        client.on('batch end coalesced', (event) => {
+            const msg = event.coalescedMessage;
+            if (!msg) {
+                return;
+            }
+
+            let bufferName = msg.target;
+
+            // If this is a PM to us, use the sender's nick as buffer name
+            if (bufferName && bufferName.toLowerCase() === client.user.nick.toLowerCase()) {
+                bufferName = msg.nick;
+            }
+
+            if (!bufferName) {
+                return;
+            }
+
+            let buffer = state.getOrAddBufferByName(networkid, bufferName);
+
+            let textFormatType = 'privmsg';
+            if (msg.type === 'action') {
+                textFormatType = 'action';
+            } else if (msg.type === 'notice') {
+                textFormatType = 'notice';
+            }
+
+            let messageBody = TextFormatting.formatText(textFormatType, {
+                nick: msg.nick,
+                username: msg.ident,
+                host: msg.hostname,
+                text: msg.message,
+            });
+
+            let eventTime = msg.time ?
+                network.ircClient.network.timeToLocal(msg.time) :
+                Date.now();
+
+            state.addMessage(buffer, {
+                time: eventTime,
+                server_time: msg.time || 0,
+                nick: msg.nick,
+                message: messageBody,
+                type: msg.type || 'privmsg',
+                tags: msg.tags || {},
+            });
+        });
     };
 
     function rawEventsHandler(command, event, rawLine, client, next) {
@@ -471,6 +521,13 @@ function clientMiddleware(state, network) {
         }
 
         if (command === 'message') {
+            // If this message is part of a multiline batch, skip it here
+            // The coalesced message will be handled by the 'batch end coalesced' event
+            if (event.batch && client.batch?.shouldCoalesce(event.batch.type)) {
+                next();
+                return;
+            }
+
             let isPrivateMessage = false;
             let bufferName = event.from_server ? '*' : event.target;
 

@@ -92,7 +92,7 @@
 /* Background image - bottom right, monochrome tinted */
 .kiwi-messagelist::before {
     content: '';
-    position: absolute;
+    position: fixed;
     bottom: 0;
     right: 0;
     width: 100%;
