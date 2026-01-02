@@ -27,11 +27,12 @@
             </div>
 
             <remove-before-update>
-                <template v-for="day in filteredMessagesGroupedDay">
+                <template v-for="(day, dayIdx) in filteredMessagesGroupedDay">
                     <div
                         v-if="filteredMessagesGroupedDay.length > 1 && day.messages.length > 0"
                         :key="`msgdatemarker${day.dayNum}`"
                         class="kiwi-messagelist-seperator"
+                        :style="{ zIndex: dayIdx + 1 }"
                     >
                         <span>{{ (new Date(day.messages[0].time)).toDateString() }}</span>
                     </div>
@@ -901,16 +902,14 @@ div.kiwi-messagelist-item.kiwi-messagelist-item--selected .kiwi-messagelist-mess
 .kiwi-messagelist-seperator {
     text-align: center;
     display: block;
-    margin: 1em auto;
+    padding: 1em 0;
     position: sticky;
     top: -1px;
-    z-index: 1;
+    background: var(--brand-default-bg);
 }
 
 .kiwi-messagelist-seperator > span {
     display: inline-block;
-    position: relative;
-    z-index: 1;
     padding: 0 1em;
     user-select: none;
 }

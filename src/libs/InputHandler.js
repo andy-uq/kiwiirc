@@ -47,8 +47,80 @@ export default class InputHandler {
     listenForInput() {
         this.state.$on('input.raw', (input, context = this.defaultContext()) => {
             let lines = input.split('\n');
+
+            // Check if this is a multi-line message that should be sent as a batch
+            // Only apply to plain messages (not commands)
+            if (lines.length > 1 && this.shouldSendAsMultilineBatch(lines, context)) {
+                this.sendMultilineMessage(lines, context);
+                return;
+            }
+
             lines.forEach((line) => this.processLine(line, context));
         });
+    }
+
+    /**
+     * Check if the input should be sent as a multiline batch
+     * @param {string[]} lines - The input lines
+     * @param {object} context - The context with network and buffer
+     * @returns {boolean}
+     */
+    shouldSendAsMultilineBatch(lines, context) {
+        const { network, buffer } = context;
+
+        // Don't use batch for server buffers
+        if (buffer.isServer()) {
+            return false;
+        }
+
+        // Check if any line is a command (starts with /)
+        const hasCommands = lines.some((line) => {
+            let stripped = Misc.stripStyles(line);
+            // Allow escaped commands (//) but not real commands
+            return stripped[0] === '/' && stripped.substr(0, 2) !== '//';
+        });
+
+        if (hasCommands) {
+            return false;
+        }
+
+        // Check if the network supports multiline batches
+        if (!network.ircClient.batch?.supportsMultiline()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Send multiple lines as a single multiline batch
+     * @param {string[]} lines - The message lines
+     * @param {object} context - The context with network and buffer
+     */
+    sendMultilineMessage(lines, context) {
+        this.validateContext(context);
+        const { network, buffer } = context;
+
+        // Filter out empty lines and process each line for escaped commands
+        let processedLines = lines.map((line) => {
+            let stylesStrippedLine = Misc.stripStyles(line);
+            // Handle escaped commands (//)
+            if (stylesStrippedLine.substr(0, 2) === '//') {
+                return line.substr(1);
+            }
+            return line;
+        }).filter((line) => line.trim() !== '');
+
+        if (processedLines.length === 0) {
+            return;
+        }
+
+        // Don't add the message locally - rely on echo-message to show it.
+        // The 'batch end coalesced' handler in IrcClient.js will display the
+        // coalesced message when the server echoes it back.
+
+        // Send using multiline batch
+        network.ircClient.batch.sendMultiline(buffer.name, processedLines, 'privmsg');
     }
 
     processLine(rawLine, context = this.defaultContext()) {

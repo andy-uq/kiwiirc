@@ -26,6 +26,14 @@ function shouldCoalesce(type) {
 }
 
 /**
+ * Generate a unique batch ID for outgoing batches
+ * @returns {string} A unique batch reference tag
+ */
+function generateBatchId() {
+    return 'kiwi_' + Math.random().toString(36).substr(2, 9);
+}
+
+/**
  * Adds generic IRCv3 batch support to irc-framework.
  *
  * irc-framework already handles batch buffering internally - it collects all
@@ -49,6 +57,68 @@ export default function batchMiddleware() {
         // Expose batch utilities on the client
         client.batch = {
             shouldCoalesce,
+            /**
+             * Check if the server supports multiline batches
+             * @returns {boolean}
+             */
+            supportsMultiline() {
+                return client.network.cap.isEnabled('draft/multiline') ||
+                       client.network.cap.isEnabled('multiline');
+            },
+            /**
+             * Send a multiline message as a batch
+             * @param {string} target - The target channel or nick
+             * @param {string[]} lines - Array of message lines to send
+             * @param {string} [type='privmsg'] - Message type: 'privmsg', 'notice', or 'action'
+             */
+            sendMultiline(target, lines, type = 'privmsg') {
+                if (!lines || lines.length === 0) {
+                    return;
+                }
+
+                // If only one line or multiline not supported, send normally
+                if (lines.length === 1 || !this.supportsMultiline()) {
+                    lines.forEach((line) => {
+                        if (type === 'action') {
+                            client.action(target, line);
+                        } else if (type === 'notice') {
+                            client.notice(target, line);
+                        } else {
+                            client.say(target, line);
+                        }
+                    });
+                    return;
+                }
+
+                const batchId = generateBatchId();
+                log.debug('Sending multiline batch:', { batchId, target, lineCount: lines.length });
+
+                // Start the batch
+                client.raw('BATCH', '+' + batchId, 'draft/multiline', target);
+
+                // Send each line with the batch tag
+                lines.forEach((line) => {
+                    let command;
+                    let message = line;
+
+                    if (type === 'action') {
+                        command = 'PRIVMSG';
+                        message = '\x01ACTION ' + line + '\x01';
+                    } else if (type === 'notice') {
+                        command = 'NOTICE';
+                    } else {
+                        command = 'PRIVMSG';
+                    }
+
+                    // Send raw with batch tag
+                    client.raw(`@batch=${batchId} ${command} ${target} :${message}`);
+                });
+
+                // End the batch
+                client.raw('BATCH', '-' + batchId);
+
+                log.debug('Multiline batch sent:', { batchId });
+            },
         };
 
         // Listen to irc-framework's batch end event to emit coalesced messages
